@@ -95,6 +95,6 @@ if os.path.isfile(server_file):
     save_command(command, getLogDir() + filename)
     print("Traceroute saved to \"{name}\"").format(name=filename)
 else:
-    print("You are missing the %s file, so I cannot offer any servers." % server_file)
+    print("You are missing the {jsfile} file, so I cannot offer any servers.").format(jsfile=server_file)
     print("It should be placed in the same folder that this program is located.")
 
