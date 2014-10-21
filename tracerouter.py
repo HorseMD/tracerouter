@@ -1,5 +1,4 @@
-# Simple Traceroute Server...program...thing
-# by Horse M.D.
+# A quick and dirty traceroute helper script.
 #
 # Traceroute to a given server in a list.
 #
@@ -41,16 +40,21 @@ def ensure_dir(dire):
     if not os.path.exists(d):
         os.makedirs(d)
 
+# Whether or not the given num is between 1 and max_num.
+def valid_choice(num, max_num):
+    return num - 1 in range(max_num)
+
 # User choses a number between 0 and how ever many servers there are.
 # The numbers are displayed +1 more than they are, and then 1 is removed
 # before this method returns the choice.
 def get_choice(max_choice):
     choice = -1
-    while choice <= 0 or choice > max_choice:
+    while choice == -1:
         try:
             choice = int(input("\nPlease make a choice: "))
-            if choice <= 0 or choice > max_choice:
+            if not valid_choice(choice, max_choice):
                 print("Invalid choice, please type a number that is actually there.")
+                choice = -1
         except ValueError:
             print("Invalid choice, please type a number.")
             choice = -1
@@ -61,11 +65,11 @@ def save_command(command, file_path, verbose=True):
     with open(file_path, 'w') as save_file:
         try:
             if verbose:
-                print("Running %s. This may take a while." % command[0])
+                print("Running {cmd}. This may take a while.").format(cmd=command[0])
             text = check_output(command)
             save_file.write(text.decode("utf-8"))
         except OSError:
-            print("Couldn't run the %s executable. (Is it installed?)" % command[0])
+            print("Couldn't run the {cmd} executable. (Is it installed?)").format(cmd=command[0])
 
 # Begin the main part of the program. It's so simple that it's not really worth making it
 # particularly object oriented.
@@ -75,21 +79,21 @@ if os.path.isfile(server_file):
 
     print("Please choose a server by number:")
     for i in range(len(servers)):
-        print("\t%d. %s" % (i + 1, servers[i]["name"]))
+        print("\t{index}. {name}").format(index=i + 1, name=servers[i]["name"])
 
     server   = servers[get_choice(len(servers))]
     # filter empty elements from command so its easy for users to set/unset arguments
     command  = filter(None, 
         [traceroute] + [tracert_args] + [server["address"]]
     )
-    filename = "traceroute %s (%s) %s.txt" % (
-        server["name"],
-        server["address"],
-        time.strftime(date_format)
+    filename = "traceroute {name} ({address}) {time}.txt".format(
+        name=server["name"],
+        address=server["address"],
+        time=time.strftime(date_format)
     )
 
     save_command(command, getLogDir() + filename)
-    print("Traceroute saved to \"%s\"" % filename)
+    print("Traceroute saved to \"{name}\"").format(name=filename)
 else:
     print("You are missing the %s file, so I cannot offer any servers." % server_file)
     print("It should be placed in the same folder that this program is located.")
