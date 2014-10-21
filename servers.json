@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Google",
+        "address": "www.google.com"
+    },
+    {
+        "name": "Github",
+        "address": "192.30.252.130"
+    },
+    {
+        "name": "Pastebin",
+        "address": "pastebin.com"
+    }
+]
